@@ -17,18 +17,17 @@ fn App() -> Html {
     let onclick = {
         let prooompt = prooompt.clone();
 
-        //Callback::from(move |_| {
-        //    prooompt.message = ""; //equals to var from input text box
-        //                           //logic for sending and receiving req and resp from llm
-        //                           //
-        //    prooompt.reply = ""; //reply from llm
-        //                         //
-        //})
+        Callback::from(move |_| {
+            prooompt.push(Prompt {
+                reply: "yes you clicked that button",
+                message: "yep i clicked ig",
+            })
+        })
     };
 
     html! {
         <div>
-            "Welcome to locallm!"
+            {"Welcome to locallm!"}
             <div class="chat-section">
 
                 <div class="message-section">
@@ -40,7 +39,7 @@ fn App() -> Html {
                 </div>
                 <div class="input-section">
                     <input class="input-prompt" placeholder="Start typing here..." />
-                    <button class="send-btn" onclick={onclick} > Go! </button>
+                    <button class="send-btn" {onclick} > {"Go!"} </button>
                 </div>
             </div>
         </div>
