@@ -1,13 +1,7 @@
+use crate::app;
 use serde::{Deserialize, Serialize};
-
-#[derive(Clone)]
-pub struct Prompt {
-    pub message: String,
-    pub reply: String,
-}
-
 #[derive(Serialize, Deserialize)]
-struct Request {
+pub struct Request {
     model: String,
     prompt: String,
     stream: bool,
@@ -18,7 +12,10 @@ struct Response {
     response: String,
 }
 
-async fn send(prompt: Prompt, model: String) -> Result<Prompt, reqwest::Error> {
+pub async fn send(
+    prompt: app::types::Prompt,
+    model: String,
+) -> Result<app::types::Prompt, reqwest::Error> {
     let url = "http://localhost:11434/api/generate";
     let client: reqwest::Client = reqwest::Client::new();
 
@@ -44,7 +41,7 @@ async fn send(prompt: Prompt, model: String) -> Result<Prompt, reqwest::Error> {
 #[tokio::main]
 async fn main() {
     let out = send(
-        Prompt {
+        app::types::Prompt {
             message: "hey how are you?".to_string(),
             reply: "".to_string(),
         },
