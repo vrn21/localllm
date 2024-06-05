@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 full = "0.1.0"
-reqwest = "0.12.4"
-tokio = "1.38.0"
+main = "0.1.0"
+reqwest = { version = "0.11", features = ["json"] }
+serde = "1.0.203"
+tokio = { version = "1", features = ["full"] }
 yew = { git = "https://github.com/yewstack/yew/", features = ["csr"] }

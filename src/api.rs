@@ -1,50 +1,56 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone)]
-    pub struct Prompt<'a> {
-        pub message: &'a str,
-        pub reply: &'a str,
-    }
-
-#[derive(Serialize, Deserialize)]
-struct POST{
-    model: &str,
-    prompt: &str,
+pub struct Prompt {
+    pub message: String,
+    pub reply: String,
 }
 
 #[derive(Serialize, Deserialize)]
-struct Request<'a>{
-    model: &'a str,
-    prompt: &'a str,
+struct Request {
+    model: String,
+    prompt: String,
     stream: bool,
 }
 
 #[derive(Serialize, Deserialize)]
-struct Response{
-    response :String,
+struct Response {
+    response: String,
 }
 
-#[tokio::main]
-async fn send(prompt: Prompt<'a>,model: &str) -> Result<Prompt<'a>',reqwest::Error>{
+async fn send(prompt: Prompt, model: String) -> Result<Prompt, reqwest::Error> {
     let url = "http://localhost:11434/api/generate";
     let client: reqwest::Client = reqwest::Client::new();
 
-    let request = Request{
-        model: "guru",
-        prompt: prompt.message.to_string(),
+    let request = Request {
+        model: model,
+        prompt: prompt.message.clone(),
         stream: false,
     };
 
-    let response = client.post(url).json(&request).send().await()?.json::<Response>().await?;
-    let prompt = prompt.clone();
-    prompt.reply = reponse.response;
+    let response = client
+        .post(url)
+        .json(&request)
+        .send()
+        .await?
+        .json::<Response>()
+        .await?;
+    let mut prompt = prompt.clone();
+    prompt.reply = response.response.as_str().to_owned();
 
-    Ok(prompt)
+    Ok(prompt.to_owned())
 }
 
-fn main(){
-    let out: Prompt = send(Prompt{
-        message:"hey how are you?",
-        reply:"",
-    },"gemma:2b").unwrap;
+#[tokio::main]
+async fn main() {
+    let out = send(
+        Prompt {
+            message: "hey how are you?".to_string(),
+            reply: "".to_string(),
+        },
+        "gemma:2b".to_string(),
+    )
+    .await
+    .unwrap();
+    println!("{}", out.reply);
 }
