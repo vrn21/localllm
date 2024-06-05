@@ -4,4 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+full = "0.1.0"
+reqwest = "0.12.4"
+tokio = "1.38.0"
 yew = { git = "https://github.com/yewstack/yew/", features = ["csr"] }
